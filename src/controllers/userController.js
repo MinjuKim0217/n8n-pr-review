@@ -32,6 +32,18 @@ const createUser = (req, res) => {
             age: age || 0
         };
 
+           // 이메일 형식 검증 추가
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+            return res.status(400).json({ error: 'Invalid email format' });
+        }
+        
+        // 중복 이메일 검사 추가
+        const existingUser = users.find(u => u.email === email);
+        if (existingUser) {
+            return res.status(409).json({ error: 'Email already exists' });
+        }
+
         users.push(newUser);
         res.status(201).json({
             success: true,
