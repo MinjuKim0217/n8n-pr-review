@@ -1,0 +1,18 @@
+{
+  "server": {
+    "port": 3000,
+    "host": "localhost"
+  },
+  "database": {
+    "type": "memory",
+    "url": "memory://localhost"
+  },
+  "logging": {
+    "level": "debug",
+    "format": "combined"
+  },
+  "features": {
+    "enableCors": true,
+    "enableRateLimit": false
+  }
+}

@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GitHub PR Review Test App</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>GitHub PR Review Test Application</h1>
+            <p>n8n 워크플로우 테스트를 위한 더미 애플리케이션</p>
+        </header>
+
+        <main>
+            <section class="users-section">
+                <h2>사용자 관리</h2>
+                <div class="controls">
+                    <button onclick="loadUsers()">사용자 목록 불러오기</button>
+                    <button onclick="showAddUserForm()">사용자 추가</button>
+                </div>
+                <div id="users-container"></div>
+            </section>
+
+            <section class="posts-section">
+                <h2>게시글 관리</h2>
+                <div class="controls">
+                    <button onclick="loadPosts()">게시글 목록 불러오기</button>
+                    <button onclick="showAddPostForm()">게시글 추가</button>
+                </div>
+                <div id="posts-container"></div>
+            </section>
+        </main>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
