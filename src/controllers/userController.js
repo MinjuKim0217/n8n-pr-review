@@ -7,10 +7,24 @@ let users = [
 
 const getAllUsers = (req, res) => {
     try {
+        // 페이지네이션 지원 추가
+        const page = parseInt(req.query.page) || 1;
+        const limit = parseInt(req.query.limit) || 10;
+        
+        // 로깅 추가 for debugging
+        console.log(`Fetching users - Page: ${page}, Limit: ${limit}`);
+        const startIndex = (page - 1) * limit;
+        const endIndex = page * limit;
+        
+        const paginatedUsers = users.slice(startIndex, endIndex);
+        
         res.json({
             success: true,
-            data: users,
-            count: users.length
+            data: paginatedUsers,
+            count: paginatedUsers.length,
+            total: users.length,
+            page: page,
+            totalPages: Math.ceil(users.length / limit)
         });
     } catch (error) {
         res.status(500).json({ error: error.message });
@@ -24,6 +38,11 @@ const createUser = (req, res) => {
         if (!name || !email) {
             return res.status(400).json({ error: 'Name and email are required' });
         }
+        
+        // 이름 길이 검증 추가
+        if (name.length < 2 || name.length > 50) {
+            return res.status(400).json({ error: 'Name must be between 2 and 50 characters' });
+        }
 
         const newUser = {
             id: users.length + 1,
@@ -32,7 +51,20 @@ const createUser = (req, res) => {
             age: age || 0
         };
 
+           // 이메일 형식 검증 추가
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+            return res.status(400).json({ error: 'Invalid email format' });
+        }
+        
+        // 중복 이메일 검사 추가
+        const existingUser = users.find(u => u.email === email);
+        if (existingUser) {
+            return res.status(409).json({ error: 'Email already exists' });
+        }
+
         users.push(newUser);
+        console.log(`New user created: ${newUser.name} (${newUser.email})`); // 생성 로그
         res.status(201).json({
             success: true,
             data: newUser
