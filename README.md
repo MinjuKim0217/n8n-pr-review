@@ -53,7 +53,8 @@ npm test
 ## API 엔드포인트
 
 ### 사용자 관리
-- `GET /api/users` - 모든 사용자 조회
+- `GET /api/users` - 모든 사용자 조회 (페이지네이션 지원: ?page=1&limit=10)
+- `GET /api/users/search` - 사용자 검색 (쿼리: ?q=검색어)
 - `POST /api/users` - 새 사용자 생성
 - `GET /api/users/:id` - 특정 사용자 조회
 - `PUT /api/users/:id` - 사용자 정보 업데이트
@@ -61,19 +62,28 @@ npm test
 
 ### 게시글 관리
 - `GET /api/posts` - 모든 게시글 조회
+- `GET /api/posts/popular` - 인기 게시글 조회 (좋아요 순, ?limit=5)
 - `POST /api/posts` - 새 게시글 생성
-- `GET /api/posts/:id` - 특정 게시글 조회
+- `GET /api/posts/:id` - 특정 게시글 조회 (조회수 자동 증가)
 - `PUT /api/posts/:id` - 게시글 업데이트
 - `DELETE /api/posts/:id` - 게시글 삭제
+- `POST /api/posts/:id/like` - 게시글 좋아요
 
 ## 기능
 
 - **사용자 관리**: 사용자 CRUD 작업
   - ✨ 새로 추가: 페이지네이션 지원
+  - 🔍 새로 추가: 사용자 검색 기능
   - ✅ 향상된 이메일 및 이름 유효성 검사
+  - 📝 상세한 필드별 검증 (이름 길이, 나이 범위 등)
 - **게시글 관리**: 게시글 CRUD 작업
+  - 👀 새로 추가: 조회수 자동 증가
+  - ❤️ 새로 추가: 좋아요 기능
+  - 🔥 새로 추가: 인기 게시글 조회
+  - 🏷️ 태그 시스템 지원
 - **웹 인터페이스**: 브라우저에서 직접 사용 가능한 UI
 - **API 테스트**: Jest를 사용한 자동화된 테스트
+- **유틸리티**: 공통 검증 함수 및 상수 관리
 
 ## PR 테스트 방법
 

@@ -6,7 +6,12 @@
   "scripts": {
     "start": "node src/app.js",
     "dev": "nodemon src/app.js",
-    "test": "jest tests/"
+    "test": "jest tests/",
+    "test:watch": "jest --watch tests/",
+    "test:coverage": "jest --coverage tests/",
+    "lint": "echo 'Linting would go here - add ESLint later'",
+    "validate": "npm test && npm run lint",
+    "api:test": "echo 'API integration tests would go here'"
   },
   "dependencies": {
     "express": "^4.18.2",
