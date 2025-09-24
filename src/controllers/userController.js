@@ -101,10 +101,44 @@ const updateUser = (req, res) => {
             return res.status(404).json({ error: 'User not found' });
         }
 
-        users[userIndex] = { ...users[userIndex], ...req.body };
+        // 업데이트할 필드 검증
+        const { name, email, age } = req.body;
+        const updatedFields = {};
+        
+        if (name !== undefined) {
+            if (name.length < 2 || name.length > 50) {
+                return res.status(400).json({ error: 'Name must be between 2 and 50 characters' });
+            }
+            updatedFields.name = name;
+        }
+        
+        if (email !== undefined) {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email)) {
+                return res.status(400).json({ error: 'Invalid email format' });
+            }
+            // 다른 사용자가 같은 이메일을 사용하는지 확인
+            const existingUser = users.find(u => u.email === email && u.id !== id);
+            if (existingUser) {
+                return res.status(409).json({ error: 'Email already exists' });
+            }
+            updatedFields.email = email;
+        }
+        
+        if (age !== undefined) {
+            if (age < 0 || age > 120) {
+                return res.status(400).json({ error: 'Age must be between 0 and 120' });
+            }
+            updatedFields.age = age;
+        }
+
+        users[userIndex] = { ...users[userIndex], ...updatedFields };
+        console.log(`User updated: ${users[userIndex].name} (ID: ${id})`); // 업데이트 로그
+        
         res.json({
             success: true,
-            data: users[userIndex]
+            data: users[userIndex],
+            message: 'User updated successfully'
         });
     } catch (error) {
         res.status(500).json({ error: error.message });
@@ -120,10 +154,45 @@ const deleteUser = (req, res) => {
             return res.status(404).json({ error: 'User not found' });
         }
 
+        const deletedUser = users[userIndex];
         users.splice(userIndex, 1);
+        console.log(`User deleted: ${deletedUser.name} (ID: ${id})`); // 삭제 로그
+        
         res.json({
             success: true,
-            message: 'User deleted successfully'
+            message: 'User deleted successfully',
+            deletedUser: {
+                id: deletedUser.id,
+                name: deletedUser.name
+            }
+        });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
+
+// 새로운 함수: 사용자 검색
+const searchUsers = (req, res) => {
+    try {
+        const { q } = req.query; // 검색어
+        
+        if (!q || q.trim().length === 0) {
+            return res.status(400).json({ error: 'Search query is required' });
+        }
+        
+        const searchTerm = q.toLowerCase();
+        const filteredUsers = users.filter(user => 
+            user.name.toLowerCase().includes(searchTerm) ||
+            user.email.toLowerCase().includes(searchTerm)
+        );
+        
+        console.log(`Search performed: "${q}" - ${filteredUsers.length} results`);
+        
+        res.json({
+            success: true,
+            data: filteredUsers,
+            count: filteredUsers.length,
+            searchTerm: q
         });
     } catch (error) {
         res.status(500).json({ error: error.message });
@@ -135,5 +204,6 @@ module.exports = {
     createUser,
     getUserById,
     updateUser,
-    deleteUser
+    deleteUser,
+    searchUsers
 };
