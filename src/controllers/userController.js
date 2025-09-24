@@ -7,10 +7,21 @@ let users = [
 
 const getAllUsers = (req, res) => {
     try {
+        // 페이지네이션 지원 추가
+        const page = parseInt(req.query.page) || 1;
+        const limit = parseInt(req.query.limit) || 10;
+        const startIndex = (page - 1) * limit;
+        const endIndex = page * limit;
+        
+        const paginatedUsers = users.slice(startIndex, endIndex);
+        
         res.json({
             success: true,
-            data: users,
-            count: users.length
+            data: paginatedUsers,
+            count: paginatedUsers.length,
+            total: users.length,
+            page: page,
+            totalPages: Math.ceil(users.length / limit)
         });
     } catch (error) {
         res.status(500).json({ error: error.message });
@@ -23,6 +34,11 @@ const createUser = (req, res) => {
         
         if (!name || !email) {
             return res.status(400).json({ error: 'Name and email are required' });
+        }
+        
+        // 이름 길이 검증 추가
+        if (name.length < 2 || name.length > 50) {
+            return res.status(400).json({ error: 'Name must be between 2 and 50 characters' });
         }
 
         const newUser = {
