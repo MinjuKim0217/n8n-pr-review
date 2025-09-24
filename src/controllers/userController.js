@@ -10,6 +10,9 @@ const getAllUsers = (req, res) => {
         // 페이지네이션 지원 추가
         const page = parseInt(req.query.page) || 1;
         const limit = parseInt(req.query.limit) || 10;
+        
+        // 로깅 추가 for debugging
+        console.log(`Fetching users - Page: ${page}, Limit: ${limit}`);
         const startIndex = (page - 1) * limit;
         const endIndex = page * limit;
         
@@ -61,6 +64,7 @@ const createUser = (req, res) => {
         }
 
         users.push(newUser);
+        console.log(`New user created: ${newUser.name} (${newUser.email})`); // 생성 로그
         res.status(201).json({
             success: true,
             data: newUser
